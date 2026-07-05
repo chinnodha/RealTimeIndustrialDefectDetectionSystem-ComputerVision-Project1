@@ -1,0 +1,2 @@
+# RealTimeIndustrialDefectDetectionSystem-ComputerVision-Project1
+Internship Project-1 with Zaalima Development
