@@ -1,14 +1,27 @@
 import os
 import xml.etree.ElementTree as ET
 
-# Change these paths if needed
-XML_DIR = r"C:\Users\ADMIN\Downloads\archive (7)\NEU-DET\train/annotations"
-LABEL_DIR = "dataset/labels/train"
+# =====================================
+# Train and Validation Dataset Paths
+# =====================================
 
-XML_DIR = r"C:\Users\ADMIN\Downloads\archive (7)\NEU-DET\validation/annotations"
-LABEL_DIR = r"dataset/labels/validation"
+DATASETS = [
 
-os.makedirs(LABEL_DIR, exist_ok=True)
+    (
+        r"C:\Users\ADMIN\Downloads\archive (7)\NEU-DET\train\annotations",
+        r"dataset\labels\train"
+    ),
+
+    (
+        r"C:\Users\ADMIN\Downloads\archive (7)\NEU-DET\validation\annotations",
+        r"dataset\labels\validation"
+    )
+
+]
+
+# =====================================
+# Class Names
+# =====================================
 
 classes = [
     "crazing",
@@ -19,42 +32,66 @@ classes = [
     "scratches"
 ]
 
-for xml_file in os.listdir(XML_DIR):
+# =====================================
+# XML -> YOLO Conversion
+# =====================================
 
-    if not xml_file.endswith(".xml"):
-        continue
+for XML_DIR, LABEL_DIR in DATASETS:
 
-    tree = ET.parse(os.path.join(XML_DIR, xml_file))
-    root = tree.getroot()
+    os.makedirs(LABEL_DIR, exist_ok=True)
 
-    width = int(root.find("size/width").text)
-    height = int(root.find("size/height").text)
+    print(f"\nProcessing : {XML_DIR}")
 
-    txt_name = xml_file.replace(".xml", ".txt")
-    txt_path = os.path.join(LABEL_DIR, txt_name)
+    for xml_file in os.listdir(XML_DIR):
 
-    with open(txt_path, "w") as f:
+        if not xml_file.endswith(".xml"):
+            continue
 
-        for obj in root.findall("object"):
+        xml_path = os.path.join(XML_DIR, xml_file)
 
-            class_name = obj.find("name").text
-            class_id = classes.index(class_name)
+        tree = ET.parse(xml_path)
+        root = tree.getroot()
 
-            box = obj.find("bndbox")
+        width = int(root.find("size/width").text)
+        height = int(root.find("size/height").text)
 
-            xmin = float(box.find("xmin").text)
-            ymin = float(box.find("ymin").text)
-            xmax = float(box.find("xmax").text)
-            ymax = float(box.find("ymax").text)
+        txt_name = xml_file.replace(".xml", ".txt")
+        txt_path = os.path.join(LABEL_DIR, txt_name)
 
-            x_center = ((xmin + xmax) / 2) / width
-            y_center = ((ymin + ymax) / 2) / height
+        with open(txt_path, "w") as f:
 
-            box_width = (xmax - xmin) / width
-            box_height = (ymax - ymin) / height
+            for obj in root.findall("object"):
 
-            f.write(
-                f"{class_id} {x_center} {y_center} {box_width} {box_height}\n"
-            )
+                class_name = obj.find("name").text
 
-print("Conversion completed!")
+                # Check whether class exists
+                if class_name not in classes:
+                    print(f"Skipping unknown class : {class_name}")
+                    continue
+
+                class_id = classes.index(class_name)
+
+                box = obj.find("bndbox")
+
+                xmin = float(box.find("xmin").text)
+                ymin = float(box.find("ymin").text)
+                xmax = float(box.find("xmax").text)
+                ymax = float(box.find("ymax").text)
+
+                x_center = ((xmin + xmax) / 2) / width
+                y_center = ((ymin + ymax) / 2) / height
+
+                box_width = (xmax - xmin) / width
+                box_height = (ymax - ymin) / height
+
+                f.write(
+                    f"{class_id} "
+                    f"{x_center:.6f} "
+                    f"{y_center:.6f} "
+                    f"{box_width:.6f} "
+                    f"{box_height:.6f}\n"
+                )
+
+    print(f"Finished : {LABEL_DIR}")
+
+print("\nXML to YOLO conversion completed successfully!")
