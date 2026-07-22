@@ -5,7 +5,7 @@ model = YOLO(r"C:\Users\ADMIN\Desktop\runs\detect\runs\train\defect_detection\we
 
 # Predict on an image
 results = model.predict(
-    source=r"test_images\sample.jpg",
+    source=r"test_images\sample_1.jpg",
     conf=0.25,
     save=True,
     show=True
