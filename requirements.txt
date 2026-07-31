@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+python-multipart
+ultralytics
+onnxruntime
+opencv-python-headless
+numpy
+prometheus-client

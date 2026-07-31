@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+.git/
+.gitignore
+runs/
+dataset/
+test_images/
+test_video.mp4
+*.pt

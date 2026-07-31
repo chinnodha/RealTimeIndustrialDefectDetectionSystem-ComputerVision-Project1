@@ -12,9 +12,7 @@ app = FastAPI(
 )
 
 # Load ONNX model
-model = YOLO(
-    r"C:\Users\ADMIN\Desktop\runs\detect\runs\train\defect_detection\weights\best.onnx"
-)
+model = YOLO("best.onnx")
 
 
 # ==========================================================
