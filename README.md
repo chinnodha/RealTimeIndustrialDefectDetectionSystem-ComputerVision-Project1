@@ -13,11 +13,8 @@ Internship Project-1 with Zaalima Development
 - [x] FPS benchmarking
 - [x] YOLOv8 model integration for real-time inference
 - [x] Single-image detection script
+- [x] Interactive web app for multi-image upload and detection
 - [x] Verified on sample defect images and test video
-
-### Pending Integration
-
-- [ ] Output handoff to FastAPI service (structured defect data)
 
 ## Usage
 
@@ -40,6 +37,16 @@ python detect_image.py --image sample_1.jpg --model best.pt
 Saves an annotated output image and prints a summary of detected defects
 (class name + confidence score) to the console.
 
+### Interactive Web App
+
+A browser-based interface for uploading one or more images and viewing
+annotated detection results with bounding boxes and confidence scores.
+
+```bash
+python app.py
+```
+Then open `http://localhost:8001` in your browser.
+
 ## Results
 
 Sample detections from the trained YOLOv8 model, run through this module's
@@ -56,8 +63,7 @@ detecting and annotating defects frame-by-frame while tracking real-time FPS.
 ## Dependencies
 - opencv-python
 - ultralytics
-
-## Next steps
-- Structure detection output (defect class, bounding box, timestamp) to
-  send to the FastAPI service for downstream use (e.g. PLC broadcasting).
-- Test against a wider range of real industrial footage.
+- fastapi
+- uvicorn
+- python-multipart
+- pillow
